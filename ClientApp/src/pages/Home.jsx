@@ -55,7 +55,7 @@ export function Home() {
             offsetLeft={-20}
             offsetTop={-10}
           >
-            <div>📍</div>
+            <div>📍central</div>
           </Marker>
           {data.map(place => {
             return (
