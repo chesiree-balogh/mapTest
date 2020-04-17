@@ -1,11 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ReactMapGL, { Marker, Popup } from 'react-map-gl'
+import axios from 'axios'
 
-const data = [
-  { latitude: 27.7733, longitude: -82.6389, text: 'A' },
-  { latitude: 27.7766, longitude: -82.7365, text: 'B' },
-  { latitude: 27.8777, longitude: -82.7582, text: 'C' },
-]
+// hard coded locations
+// const data = [
+//   { latitude: 27.7733, longitude: -82.6389, text: 'A' },
+//   { latitude: 27.7766, longitude: -82.7365, text: 'B' },
+//   { latitude: 27.8777, longitude: -82.7582, text: 'C' },
+// ]
 
 export function Home() {
   const [viewport, setViewport] = useState({
@@ -18,6 +20,15 @@ export function Home() {
 
   const [showPopup, setShowPopup] = useState(false)
   const [selectedPlace, setSelectedPlace] = useState({})
+  const [markers, setMarkers] = useState([])
+  const loadAllLocations = async () => {
+    const resp = await axios.get('/api/location')
+    setMarkers(resp.data)
+  }
+
+  useEffect(() => {
+    loadAllLocations()
+  }, [])
 
   const markerClicked = place => {
     console.log('marker clicked', place)
@@ -46,10 +57,21 @@ export function Home() {
               anchor="top"
               offsetTop={15}
             >
-              <div className="popup-window">😊{selectedPlace.text}</div>
+              <div className="popup-window">😊{selectedPlace.description}</div>
             </Popup>
           )}
-          <Marker
+          {markers.map(place => {
+            return (
+              <Marker
+                latitude={place.latitude}
+                longitude={place.longitude}
+                key={place.id}
+              >
+                <div onClick={() => markerClicked(place)}>📍</div>
+              </Marker>
+            )
+          })}
+          {/* <Marker
             latitude={27.7743}
             longitude={-82.6389}
             offsetLeft={-20}
@@ -67,7 +89,7 @@ export function Home() {
                 <div onClick={() => markerClicked(place)}>{place.text}</div>
               </Marker>
             )
-          })}
+          })} */}
         </ReactMapGL>
       </section>
     </div>
