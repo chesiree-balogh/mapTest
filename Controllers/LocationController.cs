@@ -6,8 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using mapTest.Models;
-using Geocoding;
-using Geocoding.Google;
+
 
 namespace mapTest.Controllers
 {
@@ -81,14 +80,6 @@ namespace mapTest.Controllers
         [HttpPost]
         public async Task<ActionResult<PointOfInterest>> PostPointOfInterest(PointOfInterest pointOfInterest)
         {
-
-            IGeocoder geocoder = new GoogleGeocoder() { ApiKey = "AIzaSyCCeT43TFuGGMtF2DfW4h8M_jGc2QHIxIk" };
-            IEnumerable<Address> addresses = await geocoder.GeocodeAsync("1600 pennsylvania ave washington dc");
-            Console.WriteLine("Formatted: " + addresses.First().FormattedAddress); //Formatted: 1600 Pennsylvania Ave SE, Washington, DC 20003, USA
-            Console.WriteLine("Coordinates: " + addresses.First().Coordinates.Latitude + ", " + addresses.First().Coordinates.Longitude); //Coordinates: 38.8791981, -76.9818437
-
-
-
 
 
             _context.PointOfInterests.Add(pointOfInterest);
