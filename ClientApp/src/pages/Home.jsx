@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import ReactMapGL, { Marker, Popup } from 'react-map-gl'
 import axios from 'axios'
+import { usePosition } from 'use-position'
 
 // hard coded locations
 // const data = [
@@ -10,13 +11,29 @@ import axios from 'axios'
 // ]
 
 export function Home() {
+  const { latitude, longitude, timestamp, accuracy, error } = usePosition(
+    false,
+    { enableHighAccuracy: true }
+  )
+  // console.log(latitude, longitude, timestamp, accuracy, error)
+
   const [viewport, setViewport] = useState({
-    width: 400,
-    height: 400,
-    latitude: 27.7743,
-    longitude: -82.6389,
+    width: 800,
+    height: 800,
+    latitude: latitude,
+    longitude: longitude,
     zoom: 8,
   })
+
+  useEffect(() => {
+    setViewport(prev => {
+      return {
+        ...prev,
+        latitude: latitude,
+        longitude: longitude,
+      }
+    })
+  }, [latitude, longitude])
 
   const [showPopup, setShowPopup] = useState(false)
   const [selectedPlace, setSelectedPlace] = useState({})
