@@ -21,6 +21,7 @@ export function Home() {
   const [showPopup, setShowPopup] = useState(false)
   const [selectedPlace, setSelectedPlace] = useState({})
   const [markers, setMarkers] = useState([])
+  const [locationAddress, setLocationAddress] = useState('')
   const loadAllLocations = async () => {
     const resp = await axios.get('/api/location')
     setMarkers(resp.data)
@@ -36,9 +37,29 @@ export function Home() {
     setShowPopup(true)
   }
 
+  const addNewLocation = () => {
+    const resp = axios.post('/api/location', {
+      description: 'from UI',
+      fullAddress: locationAddress,
+    })
+    if (resp.status === 200) {
+      setMarkers(prevMarkers => {
+        return [resp.data, ...prevMarkers]
+      })
+    }
+  }
   return (
     <div>
-      <button onClick={() => setShowPopup(true)}>Show popup</button>
+      <section>
+        <input
+          type="text"
+          placeholder="Full address..."
+          value={locationAddress}
+          onChange={e => setLocationAddress(e.target.value)}
+        />
+        <button onClick={addNewLocation}>Add New Location</button>
+      </section>
+
       <section className="map-container">
         <ReactMapGL
           {...viewport}
